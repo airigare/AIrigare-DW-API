@@ -1,6 +1,9 @@
-# CF Sample App Node.js
+# airigare-api
 
-A sample [Express](http://expressjs.com/) application to deploy to Cloud Foundry which works out of the box.
+API app airigare-api providing read/write services:
+- /mikmakAPI/airigare/weatherDW/last24hours
+- /mikmakAPI/airigare/Station/Status
+- /mikmakAPI/airigare/Station/getInstructions
 
 ## Run locally
 
