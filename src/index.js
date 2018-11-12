@@ -1,23 +1,8 @@
 	var express = require('express');
 	var path = require('path');
-	var mysql = require('mysql');
 	var app = express();
 
-	const ConfigParser = require('configparser');
-	const config = new ConfigParser();
-	config.read('.config.ini');
-
-	var host = config.get('DB', 'host');
-	var user = config.get('DB', 'user');
-	var password = config.get('DB', 'password');
-
-	var connection = mysql.createConnection({
-		host     : host,
-		user     : user,
-		password : password
-	});
-
-
+	var pool = require('./db');
 
 	app.set('port', 3000);
 	app.set('views', path.join(__dirname, 'views'));
@@ -31,19 +16,9 @@
 	});
 
 	app.get('/mikmakAPI/airigare/weatherDW/last24hours', function(req, res){
-		connection.connect(function(err) {
-			if (err) throw err;
-			console.log("Connected to DB!");
-		});
-		connection.query('USE weatherDW');
-		connection.query('SELECT * FROM actualWeater', function(err, data){
+		pool.query('USE weatherDW');
+		pool.query('SELECT * FROM actualWeater', function(err, data){
 			res.json(data);
-		});
-		connection.end(function(err) {
-			if (err) {
-				return console.log('error:' + err.message);
-			}
-			console.log('Close the database connection.');
 		});
 	});
 
@@ -52,20 +27,10 @@
 		var api = req.query.API;
 		var id = req.query.id;
 		var value = req.query.value;
-		connection.connect(function(err) {
-			if (err) throw err;
-			console.log("Connected to DB!");
-		});
-		connection.query('USE iRig');
+		pool.query('USE iRig');
 		var query = 'CALL writeLog("' + api + '", ' + id + ', ' + value + ')'
-		connection.query(query, function(err, data){
+		pool.query(query, function(err, data){
 			res.json(data);
-		});
-		connection.end(function(err) {
-			if (err) {
-				return console.log('error:' + err.message);
-			}
-			console.log('Close the database connection.');
 		});
 	});
 
@@ -73,19 +38,9 @@
 		console.log("/mikmakAPI/airigare/Station/getInstructions/");
 		var api = req.query.API;
 		console.log(api);
-		connection.connect(function(err) {
-			if (err) throw err;
-			console.log("Connected to DB!");
-		});
-		connection.query('USE iRig');
-		connection.query('SELECT * FROM `vInstructions` where `sysID` = "' + api + '"', function(err, data){
+		pool.query('USE iRig');
+		pool.query('SELECT * FROM `vInstructions` where `sysID` = "' + api + '"', function(err, data){
 			res.json(data[0]);
-		});
-		connection.end(function(err) {
-			if (err) {
-				return console.log('error:' + err.message);
-			}
-			console.log('Close the database connection.');
 		});
 	});
 	
