@@ -9,7 +9,7 @@ var user = config.get('DB', 'user');
 var password = config.get('DB', 'password');
 
 var pool = mysql.createPool({
-    connectionLimit: 10,
+    connectionLimit: 1,
     host: host,
     user: user,
     password: password
