@@ -4,15 +4,12 @@
 	var app = express();
 
 	const ConfigParser = require('configparser');
- 	const config = new ConfigParser();
- 	config.read('.config.ini');
+	const config = new ConfigParser();
+	config.read('.config.ini');
 
- 	var host = config.get('DB', 'host');
- 	var user = config.get('DB', 'user');
- 	var password = config.get('DB', 'password');
-
-	var pumpTime = 120;
-	var sleepIterations = 3380;
+	var host = config.get('DB', 'host');
+	var user = config.get('DB', 'user');
+	var password = config.get('DB', 'password');
 
 	var connection = mysql.createConnection({
 		host     : host,
@@ -34,6 +31,10 @@
 	});
 
 	app.get('/mikmakAPI/airigare/weatherDW/last24hours', function(req, res){
+		connection.connect(function(err) {
+			if (err) throw err;
+			console.log("Connected to DB!");
+		});
 		connection.query('USE weatherDW');
 		connection.query('SELECT * FROM actualWeater', function(err, data){
 			res.json(data);
@@ -45,6 +46,10 @@
 		var api = req.query.API;
 		var id = req.query.id;
 		var value = req.query.value;
+		connection.connect(function(err) {
+			if (err) throw err;
+			console.log("Connected to DB!");
+		});
 		connection.query('USE iRig');
 		var query = 'CALL writeLog("' + api + '", ' + id + ', ' + value + ')'
 		connection.query(query, function(err, data){
@@ -56,6 +61,10 @@
 		console.log("/mikmakAPI/airigare/Station/getInstructions/");
 		var api = req.query.API;
 		console.log(api);
+		connection.connect(function(err) {
+			if (err) throw err;
+			console.log("Connected to DB!");
+		});
 		connection.query('USE iRig');
 		connection.query('SELECT * FROM `vInstructions` where `sysID` = "' + api + '"', function(err, data){
 			res.json(data[0]);
