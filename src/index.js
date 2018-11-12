@@ -39,6 +39,12 @@
 		connection.query('SELECT * FROM actualWeater', function(err, data){
 			res.json(data);
 		});
+		connection.end(function(err) {
+			if (err) {
+				return console.log('error:' + err.message);
+			}
+			console.log('Close the database connection.');
+		});
 	});
 
 	app.get('/mikmakAPI/airigare/Station/Status', function(req, res){
@@ -55,6 +61,12 @@
 		connection.query(query, function(err, data){
 			res.json(data);
 		});
+		connection.end(function(err) {
+			if (err) {
+				return console.log('error:' + err.message);
+			}
+			console.log('Close the database connection.');
+		});
 	});
 
 	app.get('/mikmakAPI/airigare/Station/getInstructions', function(req, res){
@@ -68,6 +80,12 @@
 		connection.query('USE iRig');
 		connection.query('SELECT * FROM `vInstructions` where `sysID` = "' + api + '"', function(err, data){
 			res.json(data[0]);
+		});
+		connection.end(function(err) {
+			if (err) {
+				return console.log('error:' + err.message);
+			}
+			console.log('Close the database connection.');
 		});
 	});
 	
